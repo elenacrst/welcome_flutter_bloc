@@ -1,5 +1,7 @@
 import 'file:///D:/flutter_apps/xbird_flutter_test_task/xbird_flutter_test_task/lib/blocs/form/form_bloc.dart';
 import 'file:///D:/flutter_apps/xbird_flutter_test_task/xbird_flutter_test_task/lib/blocs/form/form_event.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xbird_flutter_test_task/blocs/form/form_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,8 +9,9 @@ import 'package:xbird_flutter_test_task/consts.dart';
 import 'package:xbird_flutter_test_task/blocs/agerange/age_range_bloc.dart';
 import 'package:xbird_flutter_test_task/blocs/agerange/age_range_state.dart';
 import 'package:xbird_flutter_test_task/blocs/agerange/age_range_event.dart';
+import 'package:xbird_flutter_test_task/repository/persistence_repository.dart';
 
-final List<String> ageRanges = [
+final List<String> _ageRanges = [
   '< 30',
   '31 - 45',
   '46 - 55',
@@ -18,7 +21,9 @@ final List<String> ageRanges = [
 ];
 
 class AgeRangeScreen extends StatefulWidget {
-  AgeRangeScreen();
+  final String name;
+
+  AgeRangeScreen(this.name);
 
   @override
   _AgeRangeScreenState createState() => _AgeRangeScreenState();
@@ -29,73 +34,143 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AgeRangeBloc, AgeRangeState>(
-        builder: (context, state) {
-          return SafeArea(
-              child: Scaffold(
+    return BlocBuilder<AgeRangeBloc, AgeRangeState>(builder: (context, state) {
+      return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+          ),
+          child: Scaffold(
+              appBar: AppBar(
+                /* iconTheme: IconThemeData(
+                  color: iconColor, //change your color here
+                ),*/
+                leading: _buildBackButton(),
+                backgroundColor: whiteBackground,
+                shadowColor: Colors.transparent,
+              ),
+              backgroundColor: whiteBackground,
               key: context.watch<AgeRangeBloc>().scaffoldKey,
-          body:Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'How old are you?',
-              ),
-              Expanded(
-                  child: Container(
-                    // width: double.infinity,
-                    height: MediaQuery.of(context).size.height,
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 16, top: 24, left: 16, bottom: 24),
-                      child: ListView.separated(
-                        itemCount: ageRanges.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Chip(
-                                label: Text(
-                                  ageRanges[index],
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                    color: selectedIndex == index ? selectedTextColor : unselectedTextColor
-                                  ),
+              body: Padding(
+                  padding:
+                      EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _buildTitleWidget(),
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 24,),
+                          child: _buildListWidget()
+                      )),
+                      _buildSubmitButton()
+                    ],
+                  ))));
+    }
+        //  )
 
-                                ),
-                                labelPadding: EdgeInsets.only(left: 24, right: 24, top: 14, bottom: 14),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24)),
-                                ),
-                                backgroundColor: selectedIndex == index ? selectedBackground : unselectedBackground,
+        );
+  }
 
-                              ),
-                            ),
-                            onTap: (){
-                              selectedIndex = index;
-                              context.read<AgeRangeBloc>().add(AgeRangeSelected(selectedIndex: index));
-                            },
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index){
-                          return SizedBox(
-                            height: 8,
-                          );
-                        },
-                      ),
-                    ),)
+  Widget _buildBackButton() {
+    return Align(
+        alignment: Alignment.centerLeft,
+        child: Container(
+          height: 48,
+          width: 48,
+          child: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              size: 24,
+              color: iconColor, // Return icon color
+            ),
+            onPressed: () => Navigator.pop(context),
+            // padding: EdgeInsets.only(left: 14, top: 12, right: 14, bottom: 12),
+          ),
+        ));
+  }
 
-              ),
-              RaisedButton(
-                onPressed: selectedIndex != -1 ? () {
-
-                } : null,
-                child: Text('Save'),
-              )
-
-            ],
-
-          )));
-        }
-      //  )
-
+  Widget _buildTitleWidget() {
+    return Text(
+      'How old are you?',
+        style: titleTextStyle
     );
   }
+
+  Widget _buildListItemWidget(int index) {
+    return GestureDetector(
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Chip(
+          label: Text(
+            _ageRanges[index],
+            style: TextStyle(
+                fontSize: 16,
+                color: selectedIndex == index
+                    ? selectedTextColor
+                    : unselectedTextColor,
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.15
+            ),
+          ),
+          labelPadding: EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 14,
+              bottom: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.all(Radius.circular(24)),
+          ),
+          backgroundColor: selectedIndex == index
+              ? selectedBackground
+              : unselectedBackground,
+        ),
+      ),
+      onTap: () {
+        selectedIndex = index;
+        context.read<AgeRangeBloc>().add(
+            AgeRangeSelected(selectedIndex: index));
+      },
+    );
+  }
+
+  Widget _buildListWidget() {
+    return ListView.separated(
+      itemCount: _ageRanges.length,
+      itemBuilder: (context, index) {
+        return _buildListItemWidget(index);
+      },
+      separatorBuilder:
+          (BuildContext context, int index) {
+        return SizedBox(
+          height: 8,
+        );
+      },
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    return RaisedButton(
+      onPressed: selectedIndex != -1 ? () {
+        PersistenceRepository().saveData(widget.name, _ageRanges[selectedIndex]);
+      } : null,
+      disabledColor: disabledButtonColor,
+      disabledElevation: 0,
+      disabledTextColor: disabledTextColor,
+      elevation: 0,
+      padding: EdgeInsets.only(left: 20, right: 20, top: 14, bottom: 14),
+      child: Text(
+          'Save',
+        style: buttonTextStyle),
+      shape:  RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+      color: selectedBackground,
+      textColor: selectedTextColor,
+    );
+  }
+
+
 }
