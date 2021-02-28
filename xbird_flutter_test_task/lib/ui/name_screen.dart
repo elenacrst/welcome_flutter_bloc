@@ -1,5 +1,5 @@
-import 'file:///D:/flutter_apps/xbird_flutter_test_task/xbird_flutter_test_task/lib/blocs/form/form_bloc.dart';
-import 'file:///D:/flutter_apps/xbird_flutter_test_task/xbird_flutter_test_task/lib/blocs/form/form_event.dart';
+import 'package:xbird_flutter_test_task/blocs/form/form_bloc.dart';
+import 'package:xbird_flutter_test_task/blocs/form/form_event.dart';
 import 'package:flutter/services.dart';
 import 'package:xbird_flutter_test_task/blocs/agerange/age_range_bloc.dart';
 import 'package:xbird_flutter_test_task/blocs/form/form_state.dart';
@@ -44,7 +44,6 @@ class NameState extends State<NameScreen> {
         child: Scaffold(
           backgroundColor: whiteBackground,
           key: context.read<FormBloc>().scaffoldKey,
-          // context.bloc<FormBloc>().scaffoldKey,
           body: BlocBuilder<FormBloc, FormChangedState>(
               builder: (context, state) {
             return Padding(
@@ -82,10 +81,7 @@ class NameState extends State<NameScreen> {
   Widget _buildTitleWidget() {
     return Align(
         alignment: Alignment.centerLeft,
-        child: Text(
-          'Welcome onboard!',
-          style: titleTextStyle)
-    );
+        child: Text('Welcome onboard!', style: titleTextStyle));
   }
 
   Widget _buildSubtitleWidget() {
@@ -121,11 +117,11 @@ class NameState extends State<NameScreen> {
       child: Text(
         isValid ? '' : 'Please enter a name',
         style: TextStyle(
-        fontFamily: 'OpenSans',
-        fontSize: 14,
-        letterSpacing: 0.4,
-        color: errorColor,
-      ),
+          fontFamily: 'OpenSans',
+          fontSize: 14,
+          letterSpacing: 0.4,
+          color: errorColor,
+        ),
       ),
     );
   }
@@ -135,24 +131,25 @@ class NameState extends State<NameScreen> {
       elevation: 0,
       onPressed: state.isValidName
           ? () {
-        Navigator.of(context).push(
-          MaterialPageRoute<AgeRangeScreen>(
-            builder: (_) => BlocProvider.value(
-              value: BlocProvider.of<FormBloc>(context),
-              child: BlocProvider<AgeRangeBloc>(
-                create: (_) => AgeRangeBloc(),
-                child: AgeRangeScreen(state.name),
-              ),
-            ),
-          ),
-        );
-      } : () {},
+              Navigator.of(context).push(
+                MaterialPageRoute<AgeRangeScreen>(
+                  builder: (_) => BlocProvider.value(
+                    value: BlocProvider.of<FormBloc>(context),
+                    child: BlocProvider<AgeRangeBloc>(
+                      create: (_) => AgeRangeBloc(),
+                      child: AgeRangeScreen(state.name),
+                    ),
+                  ),
+                ),
+              );
+            }
+          : () {},
       child: Text(
-          'Next',
+        'Next',
         style: buttonTextStyle,
       ),
       textColor: selectedTextColor,
-      shape:  RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
       padding: EdgeInsets.only(left: 20, right: 20, top: 14, bottom: 14),
@@ -182,20 +179,12 @@ class NameInput extends StatelessWidget {
               borderRadius: BorderRadius.circular(12.0),
               borderSide: BorderSide.none,
             ),
-        //    errorText: state.isValidName ? null : 'Please enter a name',
             fillColor: fillInputColor,
             focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: state.isValidName ? focusedInputColor : errorColor, width: 2),
+                borderSide: BorderSide(
+                    color: state.isValidName ? focusedInputColor : errorColor,
+                    width: 2),
                 borderRadius: BorderRadius.circular(12)),
-           /* focusedErrorBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: errorColor, width: 2),
-                borderRadius: BorderRadius.circular(12)),*/
-            /*errorStyle: TextStyle(
-              fontFamily: 'OpenSans',
-              fontSize: 14,
-              letterSpacing: 0.4,
-              color: errorColor,
-            ),*/
           ),
           keyboardType: TextInputType.name,
           onChanged: (value) {
@@ -208,7 +197,6 @@ class NameInput extends StatelessWidget {
             letterSpacing: 0.1,
             color: inputTextColor,
           ),
-
         );
       },
     );

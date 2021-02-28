@@ -1,7 +1,6 @@
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'file:///D:/flutter_apps/xbird_flutter_test_task/xbird_flutter_test_task/lib/blocs/form/form_event.dart';
+import 'package:xbird_flutter_test_task/blocs/form/form_event.dart';
 import 'package:xbird_flutter_test_task/blocs/form/form_state.dart';
 
 class FormBloc extends Bloc<FormEvent, FormChangedState> {
@@ -16,21 +15,15 @@ class FormBloc extends Bloc<FormEvent, FormChangedState> {
   @override
   Stream<FormChangedState> mapEventToState(FormEvent event) async* {
     if (event is NameChanged) {
-     // if (event.name.isEmpty) {
-        yield FormChangedState(
+      yield FormChangedState(
           isValidName: event.name.isNotEmpty,
           name: event.name,
-          isSubmitted: false
-        );
-      //} else {
-   //     yield SuccessState();
-    //  }
-    } else if(event is NameSubmit) {
+          isSubmitted: false);
+    } else if (event is NameSubmit) {
       yield FormChangedState(
-        isValidName: event.name.isNotEmpty,
+          isValidName: event.name.isNotEmpty,
           name: event.name,
-          isSubmitted: true
-      );
+          isSubmitted: true);
     }
   }
 }

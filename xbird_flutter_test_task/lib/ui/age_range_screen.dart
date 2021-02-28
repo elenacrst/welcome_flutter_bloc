@@ -1,8 +1,4 @@
-import 'file:///D:/flutter_apps/xbird_flutter_test_task/xbird_flutter_test_task/lib/blocs/form/form_bloc.dart';
-import 'file:///D:/flutter_apps/xbird_flutter_test_task/xbird_flutter_test_task/lib/blocs/form/form_event.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:xbird_flutter_test_task/blocs/form/form_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:xbird_flutter_test_task/consts.dart';
@@ -41,9 +37,6 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
           ),
           child: Scaffold(
               appBar: AppBar(
-                /* iconTheme: IconThemeData(
-                  color: iconColor, //change your color here
-                ),*/
                 leading: _buildBackButton(),
                 backgroundColor: whiteBackground,
                 shadowColor: Colors.transparent,
@@ -59,17 +52,15 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
                     children: [
                       _buildTitleWidget(),
                       Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 24,),
-                          child: _buildListWidget()
-                      )),
+                          child: Padding(
+                              padding: EdgeInsets.only(
+                                top: 24,
+                              ),
+                              child: _buildListWidget())),
                       _buildSubmitButton()
                     ],
                   ))));
-    }
-        //  )
-
-        );
+    });
   }
 
   Widget _buildBackButton() {
@@ -85,16 +76,12 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
               color: iconColor, // Return icon color
             ),
             onPressed: () => Navigator.pop(context),
-            // padding: EdgeInsets.only(left: 14, top: 12, right: 14, bottom: 12),
           ),
         ));
   }
 
   Widget _buildTitleWidget() {
-    return Text(
-      'How old are you?',
-        style: titleTextStyle
-    );
+    return Text('How old are you?', style: titleTextStyle);
   }
 
   Widget _buildListItemWidget(int index) {
@@ -111,17 +98,12 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
                     : unselectedTextColor,
                 fontFamily: 'OpenSans',
                 fontWeight: FontWeight.w600,
-                letterSpacing: 0.15
-            ),
+                letterSpacing: 0.15),
           ),
-          labelPadding: EdgeInsets.only(
-              left: 24,
-              right: 24,
-              top: 14,
-              bottom: 14),
+          labelPadding:
+              EdgeInsets.only(left: 24, right: 24, top: 14, bottom: 14),
           shape: RoundedRectangleBorder(
-            borderRadius:
-            BorderRadius.all(Radius.circular(24)),
+            borderRadius: BorderRadius.all(Radius.circular(24)),
           ),
           backgroundColor: selectedIndex == index
               ? selectedBackground
@@ -130,8 +112,9 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
       ),
       onTap: () {
         selectedIndex = index;
-        context.read<AgeRangeBloc>().add(
-            AgeRangeSelected(selectedIndex: index));
+        context
+            .read<AgeRangeBloc>()
+            .add(AgeRangeSelected(selectedIndex: index));
       },
     );
   }
@@ -142,8 +125,7 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
       itemBuilder: (context, index) {
         return _buildListItemWidget(index);
       },
-      separatorBuilder:
-          (BuildContext context, int index) {
+      separatorBuilder: (BuildContext context, int index) {
         return SizedBox(
           height: 8,
         );
@@ -153,24 +135,23 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
 
   Widget _buildSubmitButton() {
     return RaisedButton(
-      onPressed: selectedIndex != -1 ? () {
-        PersistenceRepository().saveData(widget.name, _ageRanges[selectedIndex]);
-      } : null,
+      onPressed: selectedIndex != -1
+          ? () {
+              PersistenceRepository()
+                  .saveData(widget.name, _ageRanges[selectedIndex]);
+            }
+          : null,
       disabledColor: disabledButtonColor,
       disabledElevation: 0,
       disabledTextColor: disabledTextColor,
       elevation: 0,
       padding: EdgeInsets.only(left: 20, right: 20, top: 14, bottom: 14),
-      child: Text(
-          'Save',
-        style: buttonTextStyle),
-      shape:  RoundedRectangleBorder(
+      child: Text('Save', style: buttonTextStyle),
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
       color: selectedBackground,
       textColor: selectedTextColor,
     );
   }
-
-
 }

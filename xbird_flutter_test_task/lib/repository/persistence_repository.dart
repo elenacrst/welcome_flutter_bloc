@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 const _keyName = 'name';
 const _keyAgeRange = 'ageRange';
 
-class PersistenceRepository{
+class PersistenceRepository {
   saveData(String name, String ageRange) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyName, name);
